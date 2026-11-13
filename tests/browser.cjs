@@ -568,3 +568,29 @@ test(
     assert.deepEqual(await ledger(page), before);
   },
 );
+
+test(
+  "versioned release download opens and starts an isolated demo",
+  { timeout: 90000, skip: !process.env.BILLING_RELEASE_DIR },
+  async (t) => {
+    const version = require("../package.json").version;
+    const route = require("node:url").pathToFileURL(
+      path.join(
+        process.env.BILLING_RELEASE_DIR,
+        `Billing-Workspace-v${version}.html`,
+      ),
+    ).href;
+    const { page } = await fresh(t);
+    await page.goto(route);
+    const original = await ledger(page);
+    const metadata = await page.locator("#billing-release-info").textContent();
+    assert.equal(JSON.parse(metadata).version, version);
+    await page.locator("#demo-toggle").click();
+    await page.waitForFunction(
+      () => !!localStorage.getItem("local-billing-demo-ledger-v1"),
+    );
+    assert.equal(await page.locator("#demo-notice").isVisible(), true);
+    await issue(page, { amount: "12.00" });
+    assert.deepEqual(await ledger(page), original);
+  },
+);

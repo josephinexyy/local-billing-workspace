@@ -14,3 +14,5 @@ backups/
 
 test-results/
 playwright-report/
+
+release-assets/
