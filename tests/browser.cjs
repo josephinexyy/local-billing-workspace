@@ -69,6 +69,14 @@ before(
         ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
         : {}),
     });
+    console.log(
+      "Browser environment: " +
+        JSON.stringify({
+          chromium: browser.version(),
+          node: process.version,
+          platform: process.platform,
+        }),
+    );
   },
   { timeout: 60000 },
 );
@@ -460,6 +468,14 @@ test(
       pages.every((p) => p.images.length === 1 && p.images[0].width === 1420),
     );
     const total = pages.reduce((n, p) => n + p.images[0].height, 0);
+    console.log(
+      "Long PDF pagination: " +
+        JSON.stringify({
+          pages: pages.length,
+          expectedRows: expected,
+          actualRows: total,
+        }),
+    );
     assert.ok(
       Math.abs(total - expected) <= 2,
       `Expected ${expected} raster rows, got ${total}`,
@@ -544,6 +560,7 @@ test(
     assert.equal(await page.locator("#demo-notice").isVisible(), true);
     await issue(page, { amount: "12.00" });
     assert.deepEqual(await ledger(page), before);
+    await closeModal(page);
     await page.locator("#demo-reset").click();
     await page.waitForFunction(
       () => !localStorage.getItem("local-billing-demo-ledger-v1"),
