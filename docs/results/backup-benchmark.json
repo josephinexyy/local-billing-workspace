@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-13",
+  "environment": {
+    "node": "v24.22.1",
+    "platform": "linux"
+  },
+  "scenario": "Create, serialise, parse, validate and restore a 100-record fictional workspace in memory",
+  "records": 100,
+  "warmup_iterations": 50,
+  "measured_iterations": 500,
+  "backup_bytes": 37772,
+  "median_ms": 3.458,
+  "p95_ms": 5.571,
+  "limits": "Single runtime, synthetic data, in-memory functions only. Excludes localStorage, user input, UI, OCR and PDF. No manual-work baseline or real-user efficiency claim."
+}

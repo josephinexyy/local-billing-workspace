@@ -19,7 +19,9 @@ const billingDefaults=Object.freeze({
   "paymentTermsTc": "付款條款依雙方約定，請在正式使用前修改。",
   "paymentTermsEn": "Payment terms as agreed. Update before using for business."
 });
-const companyStorageKey='local-billing-company-v1';
+const demoMode=typeof location!=='undefined'&&/(?:^|[?&])demo=1(?:&|$)/.test(location.search);
+const billingLedgerStorageKey=demoMode?'local-billing-demo-ledger-v1':'local-billing-ledger-v1';
+const companyStorageKey=demoMode?'local-billing-demo-company-v1':'local-billing-company-v1';
 function normalizeCompany(value){
  if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Invalid company settings');
  const result={...billingDefaults};
@@ -31,5 +33,8 @@ function normalizeCompany(value){
  try{new Intl.DateTimeFormat('en',{timeZone:result.timeZone}).format()}catch{throw Error('Enter a valid time zone, e.g. Asia/Hong_Kong')}
  return result;
 }
-function loadCompany(){try{return normalizeCompany(JSON.parse(localStorage.getItem(companyStorageKey)||'{}'))}catch{return {...billingDefaults}}}
+function loadCompany(){
+ try{const state=JSON.parse(localStorage.getItem(billingLedgerStorageKey)||'null');if(state?.company)return normalizeCompany(state.company)}catch{}
+ try{return normalizeCompany(JSON.parse(localStorage.getItem(companyStorageKey)||JSON.stringify(demoMode?billingDemoData.company:{})))}catch{return {...billingDefaults}}
+}
 let company=loadCompany();
