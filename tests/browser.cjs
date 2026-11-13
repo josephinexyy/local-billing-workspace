@@ -256,18 +256,18 @@ test(
   async (t) => {
     const { page } = await fresh(t);
     const old = await issue(page),
-      before = await page.locator(".doc").textContent();
+      before = await page.locator("#body .doc").textContent();
     await settings(page, companyB);
     await page.locator('[data-act="view"]').first().click();
     await page.locator('[data-act="pi"]').last().click();
-    assert.equal(await page.locator(".doc").textContent(), before);
+    assert.equal(await page.locator("#body .doc").textContent(), before);
     await pay(page);
     for (const kind of ["inv", "rc"]) {
       await page
         .locator('#body [data-act="' + kind + '"]')
         .last()
         .click();
-      const text = await page.locator(".doc").textContent();
+      const text = await page.locator("#body .doc").textContent();
       assert.ok(text.includes(companyA.nameEn) && text.includes("SIGNER A"));
       assert.ok(!text.includes(companyB.nameEn));
     }
@@ -431,7 +431,7 @@ test(
         "Detailed fictional service line. ".repeat(100) +
         " FINAL CONTENT MARKER",
     });
-    const expected = await page.locator(".doc").evaluate(async (doc) => {
+    const expected = await page.locator("#body .doc").evaluate(async (doc) => {
       await document.fonts.ready;
       const clone = doc.cloneNode(true),
         shell = document.createElement("div");
@@ -444,7 +444,7 @@ test(
       return height;
     });
     assert.ok(
-      (await page.locator(".doc").textContent()).includes(
+      (await page.locator("#body .doc").textContent()).includes(
         "FINAL CONTENT MARKER",
       ),
     );
