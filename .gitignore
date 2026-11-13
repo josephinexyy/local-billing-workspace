@@ -11,3 +11,6 @@ backups/
 *.zip
 *.csv
 *.pdf
+
+test-results/
+playwright-report/

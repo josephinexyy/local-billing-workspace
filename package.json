@@ -1,0 +1,21 @@
+{
+  "name": "local-billing-workspace",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Local billing workspace development and verification tools",
+  "scripts": {
+    "check": "node scripts/check-project.cjs",
+    "test": "node tests/core.cjs",
+    "test:browser": "node --test --test-concurrency=1 tests/browser.cjs",
+    "build": "python3 scripts/build-offline.py",
+    "format": "prettier --write dist/{company,core,storage,documents,config,backup,app,customer-tools,customer-pdf}.js tests/*.cjs scripts/*.cjs",
+    "format:check": "prettier --check dist/{company,core,storage,documents,config,backup,app,customer-tools,customer-pdf}.js tests/*.cjs scripts/*.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1",
+    "prettier": "3.10.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

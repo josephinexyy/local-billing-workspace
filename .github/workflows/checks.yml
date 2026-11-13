@@ -8,9 +8,13 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install pinned development dependencies
+        run: npm ci --ignore-scripts
+      - name: Check source formatting
+        run: npm run format:check
       - name: Check application files and syntax
         run: node scripts/check-project.cjs
       - name: Run business and recovery regression checks
@@ -19,3 +23,7 @@ jobs:
         run: |
           python3 scripts/build-offline.py
           git diff --quiet -- dist/Billing-Workspace.html || { echo "Offline build differs from committed file"; exit 1; }
+      - name: Install Chromium for browser checks
+        run: npx playwright install --with-deps chromium
+      - name: Run browser workflows, downloads and cross-tab checks
+        run: npm run test:browser

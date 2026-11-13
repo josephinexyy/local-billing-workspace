@@ -8,7 +8,7 @@ def script(path):
     return '<script>' + path.read_text().replace('</script','<\\/script') + '</script>'
 assets = ''.join(script(f) for f in sorted((dist/'pdf-assets').glob('*.js')))
 html = html.replace('<script src="lang.js"></script>',assets+script(dist/'lang.js'))
-for name in ['demo-data.js','config.js','backup.js','customer-pdf.js','customer-tools.js','vendor/display-zh.js','vendor/canvas.js','vendor/pdf.js','vendor/zip.js','app.js']:
+for name in ['demo-data.js','company.js','config.js','core.js','documents.js','backup.js','storage.js','customer-pdf.js','customer-tools.js','vendor/display-zh.js','vendor/canvas.js','vendor/pdf.js','vendor/zip.js','app.js']:
     html = html.replace('<script src="'+name+'"></script>',script(dist/name))
 out = dist/'Billing-Workspace.html'
 out.write_text(html)
