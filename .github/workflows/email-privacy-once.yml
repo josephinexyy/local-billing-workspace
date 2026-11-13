@@ -1,0 +1,43 @@
+name: One-time commit email cleanup
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/email-privacy-once.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: one-time-email-privacy
+  cancel-in-progress: false
+jobs:
+  clean-history:
+    if: github.actor == 'josephinexyy' && github.repository_owner == 'josephinexyy' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Replace email metadata and preserve the current file tree
+        env:
+          PRIVACY_EMAIL: 356071694+josephinexyy@users.noreply.github.com
+          FILTER_BRANCH_SQUELCH_WARNING: "1"
+        shell: bash
+        run: |
+          set -euo pipefail
+          expected_head=$(git rev-parse HEAD)
+          original_tree=$(git rev-parse 'HEAD^{tree}')
+          git filter-branch --force --env-filter '
+            export GIT_AUTHOR_EMAIL="$PRIVACY_EMAIL"
+            export GIT_COMMITTER_EMAIL="$PRIVACY_EMAIL"
+          ' -- main
+          test "$original_tree" = "$(git rev-parse 'HEAD^{tree}')"
+          if git log main --format='%ae%n%ce' | grep -Fvx "$PRIVACY_EMAIL" >/dev/null; then
+            echo "Email verification failed."
+            exit 1
+          fi
+          git push origin HEAD:refs/heads/main --force-with-lease="refs/heads/main:$expected_head"
+          echo "Commit emails verified. The current file tree is unchanged. Remove this temporary workflow after verification." >> "$GITHUB_STEP_SUMMARY"
