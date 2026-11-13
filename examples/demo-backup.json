@@ -1,0 +1,54 @@
+{
+  "v": 1,
+  "clients": [
+    {
+      "id": "example-customer",
+      "name": "示例客戶有限公司",
+      "en": "EXAMPLE CUSTOMER LIMITED",
+      "br": "DEMO0001",
+      "address": "Example address — fictional"
+    }
+  ],
+  "docs": [
+    {
+      "id": "example-pending",
+      "pi": "PI-2026-001",
+      "contract": "DEMO-EXAMPLE-20261101",
+      "date": "2026-11-01",
+      "customer": {
+        "id": "example-customer",
+        "name": "示例客戶有限公司",
+        "en": "EXAMPLE CUSTOMER LIMITED",
+        "br": "DEMO0001",
+        "address": "Example address — fictional"
+      },
+      "item": "示例顧問服務",
+      "itemEn": "Example consultancy service",
+      "currency": "HKD",
+      "amount": 123450,
+      "status": "待收款"
+    },
+    {
+      "id": "example-paid",
+      "pi": "PI-2026-002",
+      "contract": "DEMO-EXAMPLE-20261102",
+      "date": "2026-11-02",
+      "customer": {
+        "id": "example-customer",
+        "name": "示例客戶有限公司",
+        "en": "EXAMPLE CUSTOMER LIMITED",
+        "br": "DEMO0001",
+        "address": "Example address — fictional"
+      },
+      "item": "示例網站規劃服務",
+      "itemEn": "Example website planning service",
+      "currency": "USD",
+      "amount": 25000,
+      "status": "已收款",
+      "paid": "2026-11-03",
+      "issued": "2026-11-03",
+      "inv": "INV-2026-001",
+      "rc": "RC-2026-001"
+    }
+  ]
+}
