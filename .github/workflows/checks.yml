@@ -1,5 +1,8 @@
 name: Project checks
 on: [push, pull_request]
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -15,4 +18,4 @@ jobs:
       - name: Verify reproducible offline build
         run: |
           python3 scripts/build-offline.py
-          git diff --exit-code -- dist/Billing-Workspace.html
+          git diff --quiet -- dist/Billing-Workspace.html || { echo "Offline build differs from committed file"; exit 1; }
