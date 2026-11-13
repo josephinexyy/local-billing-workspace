@@ -8,6 +8,10 @@
 
 **[Local Billing Workspace｜本地开票工作台](https://github.com/josephinexyy/local-billing-workspace)**
 
+**[下载即用 · v0.2.0](https://github.com/josephinexyy/local-billing-workspace/releases/download/v0.2.0/Billing-Workspace-v0.2.0.html)** · [完整离线包 ZIP](https://github.com/josephinexyy/local-billing-workspace/releases/download/v0.2.0/Local-Billing-Workspace-v0.2.0.zip)
+
+下载 HTML → 在 Chrome 中打开 → 点击右上角“体验演示”。不用注册账号或安装开发工具。
+
 给个人工作室、自由职业者和个体经营者做的本地开单工具，尤其关注香港小生意的使用场景。把客户资料、业务往来、发票和收款记录放在一起，让一个人做生意时也能把记录整理清楚，跟客户对接得更有条理、更体面。
 
 支持港币 / 美元、三语界面、PDF 导出、本地客户资料识别与备份恢复。从自己的实际需要出发，负责需求、使用体验和迭代，借助 AI 把想法做出来。

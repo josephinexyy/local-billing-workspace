@@ -15,7 +15,7 @@
 
 ## 浏览器里自己体验
 
-启动本机程序后，点击“体验演示”。演示账本与正式账本分开保存，提供“重置演示”按钮。
+[下载 v0.2.0 HTML](https://github.com/josephinexyy/local-billing-workspace/releases/download/v0.2.0/Billing-Workspace-v0.2.0.html)，在 Chrome 中打开，然后点击右上角“体验演示”。无需安装开发工具。演示账本与正式账本分开保存，提供“重置演示”按钮。
 
 ## 本地文字识别
 

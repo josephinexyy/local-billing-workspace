@@ -1,8 +1,20 @@
 # Local Billing Workspace｜本地开票工作台
 
-给个人工作室、自由职业者和个体经营者用的本地开单工具，尤其关注香港小生意的使用场景。把客户资料、业务往来、发票和收款记录放在一起，让一个人做生意时也能把记录整理清楚，跟客户对接得更有条理、更体面。
+给个人工作室、自由职业者和个体经营者用的本地开单工具，尤其关注香港小生意的开单、收款和客户对接。
 
-支持港币 / 美元、三语界面、PDF 导出、本地客户资料识别与备份恢复。
+## 下载 → 打开 → 体验演示
+
+**[下载 v0.2.0 · 单文件 HTML（推荐，无需解压）](https://github.com/josephinexyy/local-billing-workspace/releases/download/v0.2.0/Billing-Workspace-v0.2.0.html)**
+
+[完整离线包 ZIP · 含使用说明](https://github.com/josephinexyy/local-billing-workspace/releases/download/v0.2.0/Local-Billing-Workspace-v0.2.0.zip) · [版本说明](https://github.com/josephinexyy/local-billing-workspace/releases/tag/v0.2.0)
+
+1. **下载**：点击上面的“单文件 HTML”，保存到电脑。
+2. **打开**：在 Chrome 中打开下载的 `Billing-Workspace-v0.2.0.html`。
+3. **体验演示**：点击右上角“体验演示”，先用虚构数据试一次开单和收款。
+
+不用安装开发工具或注册账号。正式使用时点击“退出演示”，再填写自己的资料。已有账本更新前，请先导出完整备份并关闭旧版页面。
+
+把客户资料、业务往来、发票和收款记录整理清楚，让一个人做生意时也能跟客户对接得更有条理、更体面。支持港币 / 美元、三语界面、PDF 导出、本地客户资料识别与备份恢复。
 
 作者：**Josie Xiang** · 产品经理 · 使用 AI 辅助开发
 
@@ -39,7 +51,7 @@
 | 公司设置 | 在浏览器填写公司抬头、收款资料、签署人、时区及合同前缀 |
 | 离线版本 | 自包含 HTML；不需要账号或后台数据库 |
 
-## 快速开始
+## 源码运行（开发者）
 
 安装 Python 3，在项目根目录运行：
 
@@ -57,9 +69,9 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory dist
 
 程序默认从**空账本**开始。仓库中的公司和客户示例均为虚构；请勿把自己的账本、银行资料或客户证件提交到仓库。
 
-## 下载离线版
+## 重新生成离线版（开发者）
 
-打开 `dist/Billing-Workspace.html` 即可使用自包含版本。修改源码后重新生成：
+日常使用请下载首页顶部的版本文件。开发者修改源码后可重新生成 `dist/Billing-Workspace.html`：
 
 ```bash
 python3 scripts/build-offline.py

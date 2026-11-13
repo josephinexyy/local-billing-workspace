@@ -1,6 +1,14 @@
 # 搭建、配置与维护
 
-## 本机运行
+## 下载后直接使用
+
+1. [下载 v0.2.0 单文件 HTML](https://github.com/josephinexyy/local-billing-workspace/releases/download/v0.2.0/Billing-Workspace-v0.2.0.html)，无需解压。
+2. 在 Chrome 中打开下载的 `Billing-Workspace-v0.2.0.html`。
+3. 点击右上角“体验演示”，先用虚构数据试用。
+
+不用安装开发工具或注册账号。也可以下载[完整离线包 ZIP](https://github.com/josephinexyy/local-billing-workspace/releases/download/v0.2.0/Local-Billing-Workspace-v0.2.0.zip)，解压后按“使用说明.txt”操作。正式使用前退出演示；已有账本更新前先导出完整备份，再关闭旧版页面。
+
+## 源码本机运行（开发者）
 
 需要 Python 3。下载仓库 ZIP 后先解压，进入项目根目录，运行：
 
@@ -98,6 +106,8 @@ npm run build
 普通使用无需安装这些开发依赖。浏览器测试启动随机端口的本机服务和独立 Chromium 上下文，全部数据虚构。可通过 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` 指定已安装的 Chromium；默认使用 Playwright 的固定版本。
 
 公开仓库的只读工作流运行格式、语法、业务、存储、离线构建一致性和实际浏览器测试，无需额外密钥。
+
+开发者可运行 `python3 scripts/package-release.py` 生成带版本号的 HTML、ZIP 和 SHA-256 校验文件。版本读取自 `package.json`；发布文件记录来源提交，单文件也内含授权文本。脚本只允许打包已提交且未修改的运行文件；CI 会打开实际生成的文件，验证演示入口。
 
 ## 升级注意事项
 
