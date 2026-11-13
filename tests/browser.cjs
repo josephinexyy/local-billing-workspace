@@ -103,7 +103,7 @@ async function fresh(
     },
     { key, state },
   );
-  await page.goto(base + route);
+  await page.goto(route.startsWith("file:") ? route : base + route);
   await page.locator("#newpi").waitFor();
   t.after(async () => {
     if (t.passed === false)
@@ -150,7 +150,9 @@ async function issue(
   }
   await page.locator("#form button.primary").click();
   await page.locator("#body .doc").waitFor();
-  return (await ledger(page)).docs.at(-1);
+  return page.evaluate(() =>
+    JSON.parse(localStorage.getItem(billingLedgerStorageKey)).docs.at(-1),
+  );
 }
 async function download(page, locator) {
   const promise = page.waitForEvent("download");
@@ -494,6 +496,13 @@ test(
       key,
     );
     assert.equal(raw.docs[0].issuer, undefined);
+    await closeModal(page);
+    await page.locator('[data-tab="備份與匯出"]').click();
+    const file = await download(
+      page,
+      page.locator('[data-act="pre-upgrade-backup"]'),
+    );
+    assert.deepEqual(JSON.parse(await fs.readFile(file, "utf8")), raw);
   },
 );
 test(
@@ -504,5 +513,41 @@ test(
     const doc = await issue(page);
     assert.equal(doc.issuer.source, "issued");
     assert.equal(doc.issuer.company.nameEn, companyA.nameEn);
+  },
+);
+
+test(
+  "direct file mode can issue a PI with an independent company snapshot",
+  { timeout: 90000 },
+  async (t) => {
+    const route = require("node:url").pathToFileURL(
+      path.join(dist, "Billing-Workspace.html"),
+    ).href;
+    const { page } = await fresh(t, undefined, route);
+    const doc = await issue(page);
+    assert.equal(doc.issuer.source, "issued");
+    assert.equal(doc.issuer.company.nameEn, companyA.nameEn);
+  },
+);
+
+test(
+  "demo reset and demo writes leave the real ledger unchanged",
+  { timeout: 90000 },
+  async (t) => {
+    const { page } = await fresh(t);
+    const before = await ledger(page);
+    await page.locator("#demo-toggle").click();
+    await page.waitForFunction(
+      () => !!localStorage.getItem("local-billing-demo-ledger-v1"),
+    );
+    assert.deepEqual(await ledger(page), before);
+    assert.equal(await page.locator("#demo-notice").isVisible(), true);
+    await issue(page, { amount: "12.00" });
+    assert.deepEqual(await ledger(page), before);
+    await page.locator("#demo-reset").click();
+    await page.waitForFunction(
+      () => !localStorage.getItem("local-billing-demo-ledger-v1"),
+    );
+    assert.deepEqual(await ledger(page), before);
   },
 );

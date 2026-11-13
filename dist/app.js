@@ -203,6 +203,16 @@ function draw() {
         ),
         "restore",
       ) +
+      (localStorage.getItem(key + "-before-snapshots")
+        ? btn(
+            wording(
+              "下载升级前原始备份",
+              "下載升級前原始備份",
+              "Download original pre-upgrade backup",
+            ),
+            "pre-upgrade-backup",
+          )
+        : "") +
       (localStorage.getItem(key + "-before-import")
         ? btn(
             wording(
@@ -935,10 +945,18 @@ document.addEventListener("click", async (e) => {
     )
       view(d.id, "pi");
   }
-  if (a === "backup")
+  if (a === "backup") {
+    const current = read();
     download(
       "Billing-backup-" + day() + ".json",
-      JSON.stringify(createWorkspaceBackup(read(), read().company), null, 2),
+      JSON.stringify(createWorkspaceBackup(current, current.company), null, 2),
+      "application/json",
+    );
+  }
+  if (a === "pre-upgrade-backup")
+    download(
+      "Billing-before-upgrade.json",
+      localStorage.getItem(key + "-before-snapshots") || "{}",
       "application/json",
     );
   if (a === "csv") {
@@ -1268,6 +1286,7 @@ applyLanguage();
 
 if (
   !storageError &&
+  navigator.locks?.request &&
   data.docs.some((d) => d.issuer?.source === "legacy-baseline")
 )
   update(() => {});

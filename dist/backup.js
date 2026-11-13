@@ -39,20 +39,25 @@
   }
   function planWorkspaceRestore(current, decoded, restoreCompany) {
     const original = normalizeCompany(current.company);
-    const incoming = migrateLedger(
-      { ...decoded.ledger, company: decoded.company || original },
-      original,
+    // Match duplicates before assigning a legacy baseline. Existing snapshots
+    // remain authoritative when an old backup has no issuer information.
+    const result = mergeBackup(
+      migrateLedger(current, original),
+      decoded.ledger,
     );
-    const result = mergeBackup(migrateLedger(current, original), incoming);
+    const missing = result.next.docs.filter((d) => !d.issuer);
+    result.legacyBaselines = missing.length;
+    for (const doc of missing)
+      doc.issuer = Core.snapshotCompany(
+        decoded.company || original,
+        "legacy-baseline",
+      );
     result.next.company =
       restoreCompany && decoded.company
         ? normalizeCompany(decoded.company)
         : original;
     result.companyChanged =
       JSON.stringify(original) !== JSON.stringify(result.next.company);
-    result.legacyBaselines = decoded.ledger.docs.filter(
-      (d) => !d.issuer,
-    ).length;
     validate(result.next);
     return result;
   }

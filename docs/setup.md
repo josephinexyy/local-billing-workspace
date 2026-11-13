@@ -18,13 +18,13 @@ Windows 可以将 `python3` 换成 `py`。打开 <http://127.0.0.1:8000>。保�
 
 设置只保存在当前浏览器。它不会更改公开仓库，也不会自动传到其他设备。完整备份会包含公司设置。导入时默认保留当前设置，只有勾选“同时恢复公司设置”才应用备份中的抬头及收款资料。
 
-`dist/config.js` 是演示默认值。只有准备向公众展示的内容才应写入这个文件。个人或业务私密资料应通过浏览器设置填写。
+`dist/company.js` 是演示默认值。只有准备向公众展示的内容才应写入这个文件。个人或业务私密资料应通过浏览器设置填写。
 
 ## 体验演示业务
 
 点击“体验演示”，或打开 <http://127.0.0.1:8000/?demo=1>。演示账本独立保存，默认有一笔待收款港币业务和一笔已收款美元业务，可以随时重置。退出后回到正式账本。
 
-`examples/demo-backup.json` 是用于验证旧格式兼容的账本样例；`examples/demo-workspace-backup.json` 是包含公司设置的新版样例。只在演示环境导入这些文件。
+`examples/demo-backup.json` 是用于验证旧格式兼容的账本样例；`examples/demo-workspace-backup.json` 是包含公司设置的 v2 兼容样例。只在演示环境导入这些文件。
 
 ## 离线文件
 
@@ -55,7 +55,7 @@ python3 scripts/build-offline.py local-billing-offline.zip
 ## 更新前后
 
 1. 导出完整备份，确认其中包含账本和公司设置。
-2. 用虚构数据运行回归检查，核对页面和 PDF。
+2. 关闭所有旧版程序页面，用虚构数据运行回归检查，核对页面和 PDF。
 3. 更新程序；保持原网址、端口及存储键，或按迁移方案导入备份。
 4. 核对客户数量、币种、单据金额及编号，再处理新业务。
 
@@ -75,18 +75,32 @@ python3 scripts/build-offline.py local-billing-offline.zip
 
 ## 公司设置迁移规则
 
-新版备份使用 `format: local-billing-workspace` 和 `version: 2`，其中 `ledger` 保留原 v1 账本结构，`company` 保存公司配置。旧 v1 文件可继续导入。
+新版备份使用 `format: local-billing-workspace` 和 `version: 3`，其中 `ledger` 保留原 v1 账本结构，`company` 保存公司配置。单据的 `issuer` 保存独立公司资料；旧 v1 / v2 文件可继续导入。
 
 导入先核对记录和冲突，再选择是否恢复公司设置。保存时账本和公司设置写入同一个本地记录；写入失败不会先行改变公司设置。导入前的完整工作区快照可从“下载导入前备份”取回。
 
-恢复公司设置会影响当前账本单据使用的公司抬头和收款信息。应核对来源，避免把两家公司的账本混用。当前版本尚未为每张历史单据冻结签发方配置。
+恢复公司设置只影响之后的新业务，已保存的公司快照保持不变。同号签发方冲突时阻止导入。旧备份缺少快照时会在确认页提示采用的资料来源；无法还原更早已经覆盖的设置。
 
 ## 开发检查
 
+需要 Node.js 22+ 和 Python 3。npm 依赖只用于开发和测试。
+
 ```bash
-node scripts/check-project.cjs
-node tests/core.cjs
-python3 scripts/build-offline.py
+npm ci --ignore-scripts
+npm run check
+npm run format:check
+npm test
+npx playwright install --with-deps chromium
+npm run test:browser
+npm run build
 ```
 
-公开仓库的只读检查工作流会验证脚本引用、语法、示例、业务规则及离线构建一致性。无需额外密钥。
+普通使用无需安装这些开发依赖。浏览器测试启动随机端口的本机服务和独立 Chromium 上下文，全部数据虚构。可通过 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` 指定已安装的 Chromium；默认使用 Playwright 的固定版本。
+
+公开仓库的只读工作流运行格式、语法、业务、存储、离线构建一致性和实际浏览器测试，无需额外密钥。
+
+## 升级注意事项
+
+关闭旧版页面，再更新程序并保持原网址。已有无快照记录会按升级时可取得的公司设置留底；备份页的“下载升级前原始备份”可以取回首次迁移前的记录。请先对照旧 PDF 核对资料。
+
+同一浏览器、同一网址的新版页面可协调写入，不会因此拥有团队协作。源码和离线文件、不同端口或不同设备仍是独立账本。需要支持 Web Locks 的现代浏览器；不支持时可以查看和备份，写入会被拒绝。优先使用 `http://127.0.0.1:8000` 或 HTTPS；直接文件模式的行为取决于浏览器。

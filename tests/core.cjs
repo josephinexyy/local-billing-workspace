@@ -577,6 +577,33 @@ async function main() {
       }
     },
   );
+  await check(
+    "reimporting old snapshot-free backup after settings change keeps existing issuer",
+    () => {
+      const current = workspaceState();
+      current.company = configB;
+      const result = planWorkspaceRestore(
+        current,
+        decodeWorkspaceBackup(demo),
+        false,
+      );
+      assert.equal(result.added, 0);
+      assert.equal(result.skipped, 2);
+      assert.equal(result.legacyBaselines, 0);
+      assert.equal(result.next.docs[0].issuer.company.nameEn, configA.nameEn);
+    },
+  );
+  await check(
+    "equivalent issuer fields in a different JSON order do not conflict",
+    () => {
+      const current = workspaceState(),
+        incoming = workspaceState();
+      incoming.docs[0].issuer.company = Object.fromEntries(
+        Object.entries(incoming.docs[0].issuer.company).reverse(),
+      );
+      assert.equal(mergeBackup(current, incoming).skipped, 2);
+    },
+  );
   console.log(count + " checks passed");
 }
 if (require.main === module)

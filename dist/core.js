@@ -261,8 +261,8 @@
         if (
           old.issuer &&
           d.issuer &&
-          JSON.stringify(old.issuer.company) !==
-            JSON.stringify(d.issuer.company)
+          JSON.stringify(normalizeCompany(old.issuer.company)) !==
+            JSON.stringify(normalizeCompany(d.issuer.company))
         )
           throw Error("同號簽發方資料不一致，未匯入：" + d.pi);
         if (!same) throw Error("同號資料不一致，未匯入：" + d.pi);
